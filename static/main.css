@@ -1,0 +1,402 @@
+:root {
+  --background: #f7f9fb;
+  --surface: #ffffff;
+  --text: #1c2430;
+  --muted: #5b6b7f;
+  --accent: #1668a8;
+  --accent-soft: #e4f0fa;
+  --border: #d5dee7;
+  --danger: #a8261d;
+  --radius: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #131a22;
+    --surface: #1b2430;
+    --text: #e8eef5;
+    --muted: #9caebe;
+    --accent: #6db8ec;
+    --accent-soft: #1f3345;
+    --border: #2c3a4a;
+    --danger: #f08a82;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+a {
+  color: var(--accent);
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.15rem;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.site-nav a {
+  text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-nav a:focus {
+  text-decoration: underline;
+}
+
+.inline-form {
+  display: inline;
+  margin: 0;
+}
+
+.link-button {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.content {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+h1 {
+  font-size: 1.7rem;
+  margin: 0 0 0.75rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.6rem;
+}
+
+.lead {
+  color: var(--muted);
+  margin-top: 0;
+}
+
+.meta {
+  color: var(--muted);
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.details,
+.stats {
+  display: grid;
+  grid-template-columns: minmax(9rem, 14rem) 1fr;
+  gap: 0.35rem 1rem;
+  margin: 0;
+}
+
+.details dt,
+.stats dt {
+  color: var(--muted);
+}
+
+.details dd,
+.stats dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tags li {
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.95rem;
+}
+
+.tag-title {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 0.3rem;
+}
+
+.visit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+.visit-list li {
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 0;
+}
+
+.visit-list li:last-child {
+  border-bottom: none;
+}
+
+.visit-head {
+  margin: 0;
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+
+.visit-notes {
+  margin: 0.2rem 0;
+}
+
+.job-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.job-table th,
+.job-table td {
+  text-align: left;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.job-table th {
+  background: var(--accent-soft);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.job-table tr:last-child td {
+  border-bottom: none;
+}
+
+.pagination {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin: 1.25rem 0;
+}
+
+.pagination-info {
+  color: var(--muted);
+}
+
+.stacked-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 34rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.stacked-form input,
+.stacked-form select,
+.stacked-form textarea {
+  width: 100%;
+}
+
+.stacked-form .class-option input {
+  width: auto;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: flex-end;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.search-form label {
+  flex-basis: 100%;
+  font-weight: 600;
+}
+
+.search-form input,
+.search-form select {
+  flex: 1 1 12rem;
+}
+
+label {
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button,
+.button {
+  display: inline-block;
+  font: inherit;
+  font-weight: 600;
+  color: #ffffff;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin-top: 0.6rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button:hover,
+.button:hover {
+  filter: brightness(1.1);
+}
+
+button.danger,
+.button.danger {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.class-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem 1rem;
+  margin: 0.75rem 0 0;
+}
+
+.class-block + .class-block {
+  margin-top: 0.75rem;
+}
+
+.class-title {
+  margin: 0 0 0.25rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.class-option {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+  margin: 0 1rem 0 0;
+  font-weight: 400;
+}
+
+.class-option input {
+  margin: 0;
+}
+
+.help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.flash {
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 4px;
+  padding: 0.6rem 0.9rem;
+  margin: 0 0 1rem;
+}
+
+.site-footer {
+  max-width: 60rem;
+  margin: 2rem auto 1rem;
+  padding: 0 1.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 40rem) {
+  .details,
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .job-table th:nth-child(3),
+  .job-table td:nth-child(3) {
+    display: none;
+  }
+}
