@@ -61,6 +61,15 @@ $ sqlite3 database.db < init.sql
 $ flask run
 ```
 
+Jos `sqlite3`-komentorivityökalua ei ole asennettu, saman voi tehdä
+Pythonilla:
+
+```console
+$ python3 -c "import sqlite3; c = sqlite3.connect('database.db'); \
+c.executescript(open('schema.sql').read()); \
+c.executescript(open('init.sql').read()); c.commit()"
+```
+
 Sovellus käynnistyy osoitteeseen http://127.0.0.1:5000.
 
 Salasanatiivisteiden salaisuus (`config.py`) luodaan ensimmäisellä
@@ -96,7 +105,7 @@ users: 20, jobs: 100000, job_classes: 200233, visits: 75124
 seeding took 4.3 seconds
 ```
 
-Mittaukset tehtiin samalla koneella (Python 3.11, SQLite 3.4x) Flaskin
+Mittaukset tehtiin samalla koneella (Python 3.12.14, SQLite 3.53.1) Flaskin
 testiasiakkaalla, jokaisesta pyynnöstä otettiin viiden ajon nopein.
 
 | Pyyntö | Aika |
