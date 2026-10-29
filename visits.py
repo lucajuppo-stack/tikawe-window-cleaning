@@ -18,11 +18,6 @@ def get_visit(visit_id):
     return result[0] if result else None
 
 
-def count_visits(job_id):
-    sql = "SELECT COUNT(*) AS total FROM visits WHERE job_id = ?"
-    return db.query(sql, [job_id])[0]["total"]
-
-
 def add_visit(job_id, user_id, visit_date, notes):
     sql = """INSERT INTO visits (job_id, user_id, visit_date, notes)
              VALUES (?, ?, ?, ?)"""

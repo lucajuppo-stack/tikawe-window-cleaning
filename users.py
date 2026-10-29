@@ -31,16 +31,6 @@ def get_stats(user_id):
     return result[0] if result else None
 
 
-def get_users():
-    sql = """SELECT u.id, u.username,
-                    COUNT(j.id) AS job_count
-             FROM users u
-             LEFT JOIN jobs j ON j.user_id = u.id
-             GROUP BY u.id, u.username
-             ORDER BY job_count DESC, u.username"""
-    return db.query(sql)
-
-
 def create_user(username, password):
     password_hash = generate_password_hash(password)
     sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
