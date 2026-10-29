@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}Kohteet – Ikkunanpesujen seuranta{% endblock %}
+
+{% block content %}
+<h1>Ikkunanpesukohteet</h1>
+
+<p class="lead">Selaa myyntiedustajien lisäämiä kohteita. Jokaisella kohteella
+on omistaja, luokittelut ja kirjatut käynnit.</p>
+
+{% if jobs %}
+<table class="job-table">
+  <thead>
+    <tr>
+      <th>Asiakas</th>
+      <th>Osoite</th>
+      <th>Ikkunoita</th>
+      <th>Hinta</th>
+      <th>Lisääjä</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for job in jobs %}
+    <tr>
+      <td><a href="/job/{{ job.id }}">{{ job.title }}</a></td>
+      <td>{{ job.address }}</td>
+      <td>{{ job.window_count }}</td>
+      <td>{{ job.price|show_price }}</td>
+      <td><a href="/user/{{ job.user_id }}">{{ job.username }}</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Kohteita ei ole vielä lisätty.</p>
+{% endif %}
+
+{% include "pagination.html" %}
+{% endblock %}

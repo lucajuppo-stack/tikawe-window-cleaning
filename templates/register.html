@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}Luo tunnus – Ikkunanpesujen seuranta{% endblock %}
+
+{% block content %}
+<h1>Luo tunnus</h1>
+
+<p class="lead">Tunnus toimii myyntiedustajan profiilina: kohteet ja käynnit
+näkyvät profiilisi yhteydessä.</p>
+
+<form class="stacked-form" action="/register" method="post">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
+  <label for="username">Tunnus</label>
+  <input type="text" id="username" name="username" maxlength="20" required
+         aria-describedby="username-help" value="{{ username }}">
+  <p class="help" id="username-help">3–20 merkkiä: pieniä kirjaimia,
+    numeroita ja alaviivoja.</p>
+
+  <label for="password">Salasana</label>
+  <input type="password" id="password" name="password" minlength="8"
+         maxlength="100" required aria-describedby="password-help">
+  <p class="help" id="password-help">Vähintään 8 merkkiä.</p>
+
+  <button type="submit">Luo tunnus</button>
+</form>
+{% endblock %}

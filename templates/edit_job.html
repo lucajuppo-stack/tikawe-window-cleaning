@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}Muokkaa kohdetta – Ikkunanpesujen seuranta{% endblock %}
+
+{% block content %}
+<h1>Muokkaa kohdetta</h1>
+
+<p class="lead">
+  <a href="/job/{{ job.id }}">{{ job.title }}</a>
+</p>
+
+<form class="stacked-form" action="/job/{{ job.id }}/edit" method="post">
+  {% include "job_fields.html" %}
+  <button type="submit">Tallenna muutokset</button>
+</form>
+{% endblock %}

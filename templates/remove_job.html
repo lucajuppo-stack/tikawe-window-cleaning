@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}Poista kohde – Ikkunanpesujen seuranta{% endblock %}
+
+{% block content %}
+<h1>Poista kohde</h1>
+
+<p>Haluatko varmasti poistaa kohteen
+  <strong>{{ job.title }}</strong> ({{ job.address }})?
+  Myös kohteeseen kirjatut käynnit poistetaan.</p>
+
+<form class="stacked-form" action="/job/{{ job.id }}/remove" method="post">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+  <div class="actions">
+    <button type="submit" class="danger">Poista kohde</button>
+    <a class="button" href="/job/{{ job.id }}">Peruuta</a>
+  </div>
+</form>
+{% endblock %}

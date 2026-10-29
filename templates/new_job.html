@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}Lisää kohde – Ikkunanpesujen seuranta{% endblock %}
+
+{% block content %}
+<h1>Lisää kohde</h1>
+
+<p class="lead">Syötä uuden ikkunanpesukohteen tiedot ja valitse vähintään
+yksi luokittelu.</p>
+
+<form class="stacked-form" action="/new_job" method="post">
+  {% include "job_fields.html" %}
+  <button type="submit">Lisää kohde</button>
+</form>
+{% endblock %}

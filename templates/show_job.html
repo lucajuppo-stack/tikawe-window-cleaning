@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ job.title }} – Ikkunanpesujen seuranta{% endblock %}
+
+{% block content %}
+<h1>{{ job.title }}</h1>
+
+<p class="meta">
+  Omistaja: <a href="/user/{{ job.user_id }}">{{ job.username }}</a>
+</p>
+
+<section class="panel">
+  <h2>Kohteen tiedot</h2>
+  <dl class="details">
+    <dt>Osoite</dt>
+    <dd>{{ job.address }}</dd>
+    <dt>Ikkunoita</dt>
+    <dd>{{ job.window_count }}</dd>
+    <dt>Hinta</dt>
+    <dd>{{ job.price|show_price }}</dd>
+    <dt>Kuvaus</dt>
+    <dd>{{ job.description|show_lines }}</dd>
+  </dl>
+</section>
+
+<section class="panel">
+  <h2>Luokittelut</h2>
+  {% if classes %}
+    <ul class="tags">
+      {% for item in classes %}
+        <li><span class="tag-title">{{ item.title }}</span> {{ item.value }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Kohteelle ei ole valittu luokitteluja.</p>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>Käynnit ({{ visits|length }})</h2>
+  {% if visits %}
+    <ul class="visit-list">
+      {% for visit in visits %}
+        <li>
+          <p class="visit-head">
+            <strong>{{ visit.visit_date }}</strong>
+            <a href="/user/{{ visit.user_id }}">{{ visit.username }}</a>
+          </p>
+          <p class="visit-notes">{{ visit.notes|show_lines }}</p>
+          {% if session.user_id == visit.user_id %}
+            <form class="inline-form" action="/visit/{{ visit.id }}/remove"
+                  method="post">
+              <input type="hidden" name="csrf_token"
+                     value="{{ session.csrf_token }}">
+              <button class="link-button" type="submit">Poista käynti</button>
+            </form>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Kohteelle ei ole kirjattu käyntejä.</p>
+  {% endif %}
+
+  {% if session.user_id %}
+    <form class="stacked-form" action="/job/{{ job.id }}/visit" method="post">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <label for="visit_date">Käynnin päivämäärä</label>
+      <input type="date" id="visit_date" name="visit_date"
+             value="{{ today }}" required>
+      <label for="notes">Muistiinpano</label>
+      <textarea id="notes" name="notes" rows="3" maxlength="2000"
+                placeholder="Esim. Pesu sovittu asukkaan kanssa klo 9."
+                required></textarea>
+      <button type="submit">Kirjaa käynti</button>
+    </form>
+  {% else %}
+    <p><a href="/login">Kirjaudu sisään</a> kirjataksesi käynnin.</p>
+  {% endif %}
+</section>
+
+{% if is_owner %}
+<div class="actions">
+  <a class="button" href="/job/{{ job.id }}/edit">Muokkaa</a>
+  <a class="button danger" href="/job/{{ job.id }}/remove">Poista</a>
+</div>
+{% endif %}
+{% endblock %}

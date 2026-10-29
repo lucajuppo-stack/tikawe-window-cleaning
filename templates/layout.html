@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Ikkunanpesujen seuranta{% endblock %}</title>
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">Ikkunanpesujen seuranta</a>
+    <nav class="site-nav">
+      <a href="/">Kohteet</a>
+      <a href="/find">Etsi</a>
+      {% if session.user_id %}
+        <a href="/new_job">Lisää kohde</a>
+        <a href="/user/{{ session.user_id }}">Oma profiili</a>
+        <form class="inline-form" action="/logout" method="post">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+          <button class="link-button" type="submit">Kirjaudu ulos</button>
+        </form>
+      {% else %}
+        <a href="/login">Kirjaudu</a>
+        <a href="/register">Luo tunnus</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="content">
+    {% for message in get_flashed_messages() %}
+      <p class="flash">{{ message }}</p>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <p>Tietokannat ja web-ohjelmointi -harjoitustyö</p>
+  </footer>
+</body>
+</html>

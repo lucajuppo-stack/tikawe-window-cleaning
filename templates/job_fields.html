@@ -1,0 +1,38 @@
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
+<label for="title">Asiakas</label>
+<input type="text" id="title" name="title" maxlength="100" required
+       value="{{ values.title }}">
+
+<label for="address">Osoite</label>
+<input type="text" id="address" name="address" maxlength="200" required
+       value="{{ values.address }}">
+
+<label for="window_count">Ikkunoiden määrä</label>
+<input type="number" id="window_count" name="window_count" min="1"
+       max="5000" required value="{{ values.window_count }}">
+
+<label for="price">Hinta (euroa)</label>
+<input type="number" id="price" name="price" min="0" max="1000000" required
+       value="{{ values.price }}">
+
+<label for="description">Kuvaus</label>
+<textarea id="description" name="description" rows="5" maxlength="5000"
+          placeholder="Esim. Neljä kerrosta, pesu kahdessa vaiheessa.">{{ values.description }}</textarea>
+
+<fieldset class="class-group">
+  <legend>Luokittelut</legend>
+  {% for title, options in classes.items() %}
+    <div class="class-block">
+      <p class="class-title">{{ title }}</p>
+      {% for option in options %}
+        <label class="class-option" for="class-{{ option.id }}">
+          <input type="checkbox" id="class-{{ option.id }}" name="class_id"
+                 value="{{ option.id }}"
+                 {% if option.id|string in selected %}checked{% endif %}>
+          {{ option.value }}
+        </label>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</fieldset>

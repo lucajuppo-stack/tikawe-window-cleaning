@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ user.username }} – Ikkunanpesujen seuranta{% endblock %}
+
+{% block content %}
+<h1>Myyntiedustaja {{ user.username }}</h1>
+
+<section class="panel">
+  <h2>Tilastot</h2>
+  <dl class="stats">
+    <dt>Lisättyjä kohteita</dt>
+    <dd>{{ stats.job_count }}</dd>
+    <dt>Kirjattuja käyntejä</dt>
+    <dd>{{ stats.visit_count }}</dd>
+    <dt>Kohteiden yhteenlaskettu hinta</dt>
+    <dd>{{ stats.total_price|show_price }}</dd>
+    <dt>Ikkunoita yhteensä</dt>
+    <dd>{{ stats.total_windows }}</dd>
+  </dl>
+</section>
+
+<section class="panel">
+  <h2>Käyttäjän lisäämät kohteet</h2>
+  {% if jobs %}
+  <table class="job-table">
+    <thead>
+      <tr>
+        <th>Asiakas</th>
+        <th>Osoite</th>
+        <th>Ikkunoita</th>
+        <th>Hinta</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for job in jobs %}
+      <tr>
+        <td><a href="/job/{{ job.id }}">{{ job.title }}</a></td>
+        <td>{{ job.address }}</td>
+        <td>{{ job.window_count }}</td>
+        <td>{{ job.price|show_price }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>Käyttäjä ei ole vielä lisännyt kohteita.</p>
+  {% endif %}
+
+  {% include "pagination.html" %}
+</section>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% if pages > 1 %}
+<nav class="pagination" aria-label="Sivutus">
+  {% if page > 1 %}
+    <a href="{{ base_url }}page={{ page - 1 }}">‹ Edellinen</a>
+  {% endif %}
+  <span class="pagination-info">Sivu {{ page }} / {{ pages }}</span>
+  {% if page < pages %}
+    <a href="{{ base_url }}page={{ page + 1 }}">Seuraava ›</a>
+  {% endif %}
+</nav>
+{% endif %}
