@@ -115,6 +115,8 @@ def read_job_form():
             return None
         if class_id not in values["class_ids"]:
             values["class_ids"].append(class_id)
+    if not values["class_ids"]:
+        return None
     return values
 
 
@@ -245,7 +247,8 @@ def new_job():
         check_csrf()
         values = read_job_form()
         if not values:
-            flash("Tarkista lomakkeen tiedot.")
+            flash("Tarkista lomakkeen tiedot ja valitse vähintään yksi "
+                  "luokittelu.")
             return render_template("new_job.html", classes=jobs.get_classes(),
                                    values=request.form,
                                    selected=request.form.getlist("class_id"))
@@ -285,7 +288,8 @@ def edit_job(job_id):
         check_csrf()
         values = read_job_form()
         if not values:
-            flash("Tarkista lomakkeen tiedot.")
+            flash("Tarkista lomakkeen tiedot ja valitse vähintään yksi "
+                  "luokittelu.")
             job = jobs.get_job(job_id)
             return render_template("edit_job.html", job=job,
                                    classes=jobs.get_classes(),
