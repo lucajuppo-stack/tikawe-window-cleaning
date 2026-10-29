@@ -1,4 +1,5 @@
 import datetime
+import functools
 import re
 import secrets
 from urllib.parse import quote
@@ -31,6 +32,19 @@ DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 def require_login():
     if "user_id" not in session:
         abort(403)
+
+
+def login_required(view):
+    """Send a visitor who is not logged in to the login page."""
+
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if "user_id" not in session:
+            flash("Kirjaudu sisään nähdäksesi sivun.")
+            return redirect("/login")
+        return view(**kwargs)
+
+    return wrapped_view
 
 
 def check_csrf():
@@ -121,6 +135,7 @@ def read_job_form():
 
 
 @app.route("/")
+@login_required
 def index():
     page = current_page()
     total = jobs.count_jobs()
@@ -130,6 +145,7 @@ def index():
 
 
 @app.route("/job/<int:job_id>")
+@login_required
 def show_job(job_id):
     job = jobs.get_job(job_id)
     if not job:
@@ -143,6 +159,7 @@ def show_job(job_id):
 
 
 @app.route("/find")
+@login_required
 def find_jobs():
     query_text = request.args.get("query", "").strip()[:100]
     class_value = request.args.get("class_id", "").strip()
@@ -163,6 +180,7 @@ def find_jobs():
 
 
 @app.route("/user/<int:user_id>")
+@login_required
 def show_user(user_id):
     user = users.get_user(user_id)
     if not user:
@@ -237,8 +255,8 @@ def logout():
 
 
 @app.route("/new_job", methods=["GET", "POST"])
+@login_required
 def new_job():
-    require_login()
     if request.method == "GET":
         return render_template("new_job.html", classes=jobs.get_classes(),
                                values={}, selected=[])
@@ -265,8 +283,8 @@ def new_job():
 
 
 @app.route("/job/<int:job_id>/edit", methods=["GET", "POST"])
+@login_required
 def edit_job(job_id):
-    require_login()
     job = jobs.get_job(job_id)
     if not job:
         abort(404)
@@ -306,8 +324,8 @@ def edit_job(job_id):
 
 
 @app.route("/job/<int:job_id>/remove", methods=["GET", "POST"])
+@login_required
 def remove_job(job_id):
-    require_login()
     job = jobs.get_job(job_id)
     if not job:
         abort(404)

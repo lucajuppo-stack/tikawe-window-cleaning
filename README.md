@@ -17,6 +17,8 @@ erikseen asennettavia kirjastoja.
 
 - **Tunnukset ja kirjautuminen**: käyttäjä luo tunnuksen ja kirjautuu sisään.
   Tunnus toimii myyntiedustajan profiilina. Salasanat tallennetaan tiivistettyinä.
+  Kaikki sisältösivut vaativat kirjautumisen: kirjautumaton kävijä ohjataan
+  kirjautumissivulle eikä kohteita voi nähdä ilman tunnusta.
 - **Kohteet**: kirjautunut käyttäjä voi lisätä, muokata ja poistaa omia
   kohteitaan. Kaikki käyttäjät näkevät kaikkien kohteiden listan etusivulla.
   Kohde sisältää asiakkaan nimen, osoitteen, ikkunoiden määrän, hinnan ja
@@ -79,6 +81,9 @@ versionhallinnassa.
 
 ## Testaaminen
 
+Tietokanta on aluksi tyhjä: `init.sql` lisää vain luokittelujen vaihtoehdot.
+Kohteet, käynnit ja tunnukset luodaan sovelluksessa.
+
 1. Luo tunnus sivulla *Luo tunnus* (esim. `myyja_01` / `salasana123`).
 2. Kirjaudu sisään ja lisää kohde valitsemalla vähintään yksi luokittelu.
 3. Kokeile etusivun listaa, hakua (*Etsi*), kohteen muokkaamista ja
@@ -86,9 +91,9 @@ versionhallinnassa.
 4. Luo toinen tunnus ja kirjaa käynti ensimmäisen käyttäjän kohteeseen.
 5. Katso profiilisivu (*Oma profiili*) ja sen tilastot.
 
-Valmiiksi täytetyn tietokannan saa myös `seed.py`-skriptillä, joka luo 20
-myyntiedustajaa (tunnus `myyja_01` … `myyja_20`, salasana `salasana123`)
-ja suuren määrän kohteita:
+Suuren tietomäärän testaamiseen on `seed.py`, joka luo 20 myyntiedustajaa
+(tunnus `myyja_01` … `myyja_20`, salasana `salasana123`) ja halutun määrän
+kohteita. Sitä ei tarvita sovelluksen kokeilemiseen:
 
 ```console
 $ python3 seed.py 100000

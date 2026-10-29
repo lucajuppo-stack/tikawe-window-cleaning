@@ -12,7 +12,7 @@ sovelluksessa. Vaatimukset on otettu kurssimateriaalin sivuilta
 | --- | --- |
 | Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään | `app.py`: `/register`, `/login`, `/logout`; `users.py` |
 | Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan tietokohteita | `/new_job`, `/job/<id>/edit`, `/job/<id>/remove`; `jobs.py` |
-| Käyttäjä näkee sovellukseen lisätyt tietokohteet | etusivu `/` listaa kaikkien käyttäjien kohteet |
+| Käyttäjä näkee sovellukseen lisätyt tietokohteet | etusivu `/` listaa kaikkien käyttäjien kohteet (vaatii kirjautumisen) |
 | Käyttäjä pystyy etsimään tietokohteita hakusanalla tai muulla perusteella | `/find`: hakusana ja luokitussuodatin; `jobs.find_jobs` |
 | Käyttäjäsivu näyttää tilastoja ja käyttäjän lisäämät tietokohteet | `/user/<id>`; `users.get_stats` laskee tilastot SQL:llä |
 | Tietokohteille on valittavissa useampia luokitteluja | kolme luokitteluryhmää (`Kohdetyyppi`, `Palvelu`, `Vaihe`), vaihtoehdot taulussa `classes`, monivalinta |
@@ -48,7 +48,7 @@ sovelluksessa. Vaatimukset on otettu kurssimateriaalin sivuilta
 | Vaatimus | Toteutus |
 | --- | --- |
 | Salasanat tallennetaan asianmukaisesti | `werkzeug.security.generate_password_hash` (scrypt-tiiviste ja suola) |
-| Sivun katsomisen oikeus tarkastetaan | `require_login` ja omistajuuden tarkastus muokkauksessa ja poistossa |
+| Sivun katsomisen oikeus tarkastetaan | `@login_required`-dekoraattori ohjaa kirjautumattoman kävijän kirjautumissivulle, joten kohteita ei näe ilman tunnusta; POST-reitit vastaavat 403; omistajuus tarkastetaan muokkauksessa ja poistossa |
 | Lomakkeen lähettämisen oikeus tarkastetaan | `check_csrf` sekä omistajuuden tarkastus palvelimella, ei piilokenttien varassa |
 | Syötteet tarkastetaan ennen tallennusta | `read_job_form` ja `add_visit` tarkastavat pituudet, kokonaisluvut ja luokitusten olemassaolon |
 | SQL-komennoissa parametrit | kaikki arvot `?`-parametreina, ei merkkijonojen yhdistelyä arvojen kanssa |
