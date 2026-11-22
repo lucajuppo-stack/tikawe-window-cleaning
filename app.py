@@ -22,11 +22,14 @@ MAX_TITLE = 100
 MAX_ADDRESS = 200
 MAX_DESCRIPTION = 5000
 MAX_NOTES = 2000
-MAX_PRICE = 1000000
-MAX_WINDOWS = 5000
+MAX_PRICE = 10000000
+MAX_WINDOWS = 100000
 
 USERNAME_PATTERN = re.compile(r"^[a-z0-9_]{3,20}$")
 DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+PRICE_PATTERN = re.compile(r"^(\d+)(?:\.(\d{1,2}))?$")
+
+UNKNOWN_CLASS_ERROR = "Luokittelussa on tuntematon vaihtoehto."
 
 
 def require_login():
@@ -95,7 +98,48 @@ def current_page():
     return max(int(value), 1)
 
 
+def empty_job_form():
+    return {"title": "", "address": "", "description": "", "window_count": "",
+            "price": "", "class_ids": []}
+
+
+def parse_price(text):
+    """Return the price in whole euros, or None if the text is not a price."""
+    normalized = text.replace(" ", "").replace("\xa0", "").replace("€", "")
+    normalized = normalized.replace(",", ".")
+    match = PRICE_PATTERN.match(normalized)
+    if not match:
+        return None
+    euros = int(match.group(1))
+    cents = int(match.group(2).ljust(2, "0")) if match.group(2) else 0
+    if cents >= 50:
+        euros += 1
+    if not 0 <= euros <= MAX_PRICE:
+        return None
+    return euros
+
+
+def read_class_ids(errors):
+    """Return the selected classification ids, rejecting unknown ones."""
+    chosen = []
+    for value in request.form.getlist("class_id"):
+        if not value.isdigit():
+            errors["class_ids"] = UNKNOWN_CLASS_ERROR
+            return []
+        class_id = int(value)
+        if class_id not in chosen:
+            chosen.append(class_id)
+    if not chosen:
+        errors["class_ids"] = "Valitse vähintään yksi luokittelu."
+        return []
+    if jobs.get_valid_class_ids(chosen) != set(chosen):
+        errors["class_ids"] = UNKNOWN_CLASS_ERROR
+        return []
+    return chosen
+
+
 def read_job_form():
+    """Return the submitted job values and a message for every bad field."""
     values = {
         "title": request.form.get("title", "").strip(),
         "address": request.form.get("address", "").strip(),
@@ -103,35 +147,33 @@ def read_job_form():
         "window_count": request.form.get("window_count", "").strip(),
         "price": request.form.get("price", "").strip(),
     }
-    if not 3 <= len(values["title"]) <= MAX_TITLE:
-        return None
-    if not 3 <= len(values["address"]) <= MAX_ADDRESS:
-        return None
-    if len(values["description"]) > MAX_DESCRIPTION:
-        return None
-    if not values["window_count"].isdigit():
-        return None
-    if not values["price"].isdigit():
-        return None
-    values["window_count"] = int(values["window_count"])
-    values["price"] = int(values["price"])
-    if not 1 <= values["window_count"] <= MAX_WINDOWS:
-        return None
-    if not 0 <= values["price"] <= MAX_PRICE:
-        return None
+    errors = {}
 
-    values["class_ids"] = []
-    for value in request.form.getlist("class_id"):
-        if not value.isdigit():
-            return None
-        class_id = int(value)
-        if not jobs.get_class(class_id):
-            return None
-        if class_id not in values["class_ids"]:
-            values["class_ids"].append(class_id)
-    if not values["class_ids"]:
-        return None
-    return values
+    if not 1 <= len(values["title"]) <= MAX_TITLE:
+        errors["title"] = (f"Asiakkaan nimen tulee olla 1–{MAX_TITLE} "
+                           "merkkiä pitkä.")
+    if not 3 <= len(values["address"]) <= MAX_ADDRESS:
+        errors["address"] = (f"Osoitteen tulee olla 3–{MAX_ADDRESS} "
+                             "merkkiä pitkä.")
+    if len(values["description"]) > MAX_DESCRIPTION:
+        errors["description"] = (f"Kuvaus voi olla enintään "
+                                 f"{MAX_DESCRIPTION} merkkiä pitkä.")
+
+    window_count = values["window_count"].replace(" ", "")
+    if not window_count.isdigit() or not 1 <= int(window_count) <= MAX_WINDOWS:
+        errors["window_count"] = (f"Ikkunoiden määrän tulee olla "
+                                  f"kokonaisluku väliltä 1–{MAX_WINDOWS}.")
+    else:
+        values["window_count"] = int(window_count)
+
+    price = parse_price(values["price"])
+    if price is None:
+        errors["price"] = "Hinnan tulee olla numero, esim. 1500 tai 149,90."
+    else:
+        values["price"] = price
+
+    values["class_ids"] = read_class_ids(errors)
+    return values, errors
 
 
 @app.route("/")
@@ -259,27 +301,20 @@ def logout():
 def new_job():
     if request.method == "GET":
         return render_template("new_job.html", classes=jobs.get_classes(),
-                               values={}, selected=[])
+                               values=empty_job_form(), errors={})
 
-    if request.method == "POST":
-        check_csrf()
-        values = read_job_form()
-        if not values:
-            flash("Tarkista lomakkeen tiedot ja valitse vähintään yksi "
-                  "luokittelu.")
-            return render_template("new_job.html", classes=jobs.get_classes(),
-                                   values=request.form,
-                                   selected=request.form.getlist("class_id"))
+    check_csrf()
+    values, errors = read_job_form()
+    if errors:
+        return render_template("new_job.html", classes=jobs.get_classes(),
+                               values=values, errors=errors)
 
-        job_id = jobs.add_job(values["title"], values["address"],
-                              values["window_count"], values["price"],
-                              values["description"], session["user_id"],
-                              values["class_ids"])
-        flash("Kohde lisätty.")
-        return redirect("/job/" + str(job_id))
-
-    return render_template("new_job.html", classes=jobs.get_classes(),
-                           values={}, selected=[])
+    job_id = jobs.add_job(values["title"], values["address"],
+                          values["window_count"], values["price"],
+                          values["description"], session["user_id"],
+                          values["class_ids"])
+    flash("Kohde lisätty.")
+    return redirect("/job/" + str(job_id))
 
 
 @app.route("/job/<int:job_id>/edit", methods=["GET", "POST"])
@@ -291,35 +326,27 @@ def edit_job(job_id):
     if job["user_id"] != session["user_id"]:
         abort(403)
 
-    job_classes = jobs.get_job_classes(job_id)
-    selected = [str(item["id"]) for item in job_classes]
-
     if request.method == "GET":
+        job_classes = jobs.get_job_classes(job_id)
         values = {"title": job["title"], "address": job["address"],
                   "window_count": job["window_count"], "price": job["price"],
-                  "description": job["description"]}
+                  "description": job["description"],
+                  "class_ids": [item["id"] for item in job_classes]}
         return render_template("edit_job.html", job=job,
                                classes=jobs.get_classes(), values=values,
-                               selected=selected)
+                               errors={})
 
-    if request.method == "POST":
-        check_csrf()
-        values = read_job_form()
-        if not values:
-            flash("Tarkista lomakkeen tiedot ja valitse vähintään yksi "
-                  "luokittelu.")
-            job = jobs.get_job(job_id)
-            return render_template("edit_job.html", job=job,
-                                   classes=jobs.get_classes(),
-                                   values=request.form,
-                                   selected=request.form.getlist("class_id"))
+    check_csrf()
+    values, errors = read_job_form()
+    if errors:
+        return render_template("edit_job.html", job=job,
+                               classes=jobs.get_classes(), values=values,
+                               errors=errors)
 
-        jobs.update_job(job_id, values["title"], values["address"],
-                        values["window_count"], values["price"],
-                        values["description"], values["class_ids"])
-        flash("Kohde päivitetty.")
-        return redirect("/job/" + str(job_id))
-
+    jobs.update_job(job_id, values["title"], values["address"],
+                    values["window_count"], values["price"],
+                    values["description"], values["class_ids"])
+    flash("Kohde päivitetty.")
     return redirect("/job/" + str(job_id))
 
 

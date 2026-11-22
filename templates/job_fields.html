@@ -1,27 +1,49 @@
+{% set chosen = values.class_ids | default([], true) %}
+{% set errors = errors | default({}) %}
 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 
 <label for="title">Asiakas</label>
 <input type="text" id="title" name="title" maxlength="100" required
+       {% if errors.title %}class="invalid"{% endif %}
        value="{{ values.title }}">
+{% if errors.title %}<p class="field-error">{{ errors.title }}</p>{% endif %}
 
 <label for="address">Osoite</label>
 <input type="text" id="address" name="address" maxlength="200" required
+       {% if errors.address %}class="invalid"{% endif %}
        value="{{ values.address }}">
+{% if errors.address %}<p class="field-error">{{ errors.address }}</p>{% endif %}
 
 <label for="window_count">Ikkunoiden määrä</label>
 <input type="number" id="window_count" name="window_count" min="1"
-       max="5000" required value="{{ values.window_count }}">
+       max="100000" required
+       {% if errors.window_count %}class="invalid"{% endif %}
+       value="{{ values.window_count }}">
+{% if errors.window_count %}
+  <p class="field-error">{{ errors.window_count }}</p>
+{% endif %}
 
 <label for="price">Hinta (euroa)</label>
-<input type="number" id="price" name="price" min="0" max="1000000" required
+<input type="text" id="price" name="price" inputmode="decimal" required
+       {% if errors.price %}class="invalid"{% endif %}
        value="{{ values.price }}">
+{% if errors.price %}
+  <p class="field-error">{{ errors.price }}</p>
+{% endif %}
+<p class="help">Esim. 1500 tai 149,90. Desimaalit pyöristetään lähimpään
+euroon.</p>
 
 <label for="description">Kuvaus</label>
 <textarea id="description" name="description" rows="5" maxlength="5000"
+          {% if errors.description %}class="invalid"{% endif %}
           placeholder="Esim. Neljä kerrosta, pesu kahdessa vaiheessa.">{{ values.description }}</textarea>
+{% if errors.description %}
+  <p class="field-error">{{ errors.description }}</p>
+{% endif %}
 
 <fieldset class="class-group">
   <legend>Luokittelut</legend>
+  <p class="help">Valitse vähintään yksi luokittelu.</p>
   {% for title, options in classes.items() %}
     <div class="class-block">
       <p class="class-title">{{ title }}</p>
@@ -29,10 +51,13 @@
         <label class="class-option" for="class-{{ option.id }}">
           <input type="checkbox" id="class-{{ option.id }}" name="class_id"
                  value="{{ option.id }}"
-                 {% if option.id|string in selected %}checked{% endif %}>
+                 {% if option.id in chosen %}checked{% endif %}>
           {{ option.value }}
         </label>
       {% endfor %}
     </div>
   {% endfor %}
+  {% if errors.class_ids %}
+    <p class="field-error">{{ errors.class_ids }}</p>
+  {% endif %}
 </fieldset>

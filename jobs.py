@@ -10,10 +10,13 @@ def get_classes():
     return groups
 
 
-def get_class(class_id):
-    sql = "SELECT id, title, value FROM classes WHERE id = ?"
-    result = db.query(sql, [class_id])
-    return result[0] if result else None
+def get_valid_class_ids(class_ids):
+    """Return the ids that exist in the classes table."""
+    if not class_ids:
+        return set()
+    placeholders = ", ".join("?" for _ in class_ids)
+    sql = "SELECT id FROM classes WHERE id IN (" + placeholders + ")"
+    return {row["id"] for row in db.query(sql, list(class_ids))}
 
 
 def get_job(job_id):
