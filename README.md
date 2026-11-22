@@ -22,7 +22,8 @@ erikseen asennettavia kirjastoja.
 - **Kohteet**: kirjautunut käyttäjä voi lisätä, muokata ja poistaa omia
   kohteitaan. Kaikki käyttäjät näkevät kaikkien kohteiden listan etusivulla.
   Kohde sisältää asiakkaan nimen, osoitteen, ikkunoiden määrän, hinnan ja
-  kuvauksen.
+  kuvauksen. Hinta annetaan euroina joko kokonaislukuna (`1500`) tai
+  desimaalein (`149,90`); desimaalit pyöristetään lähimpään euroon.
 - **Luokittelut**: kohteelle valitaan luokitteluja kolmesta ryhmästä
   (*Kohdetyyppi*, *Palvelu*, *Vaihe*). Luokittelut on määritelty tietokannan
   taulussa `classes`, ja jokaisesta ryhmästä voi valita useita vaihtoehtoja.
@@ -86,6 +87,8 @@ Kohteet, käynnit ja tunnukset luodaan sovelluksessa.
 
 1. Luo tunnus sivulla *Luo tunnus* (esim. `myyja_01` / `salasana123`).
 2. Kirjaudu sisään ja lisää kohde valitsemalla vähintään yksi luokittelu.
+   Jos jokin kenttä on virheellinen, virheilmoitus näkyy kyseisen kentän alla
+   ja lomakkeen tiedot säilyvät.
 3. Kokeile etusivun listaa, hakua (*Etsi*), kohteen muokkaamista ja
    poistamista sekä käynnin kirjaamista.
 4. Luo toinen tunnus ja kirjaa käynti ensimmäisen käyttäjän kohteeseen.
